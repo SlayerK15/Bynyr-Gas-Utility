@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Update Request #{{ service_request.id }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Update Request #{{ service_request.id }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Current Status</label>
+                            <p class="form-control-static">
+                                <span class="badge bg-{{ service_request.status|lower }}">
+                                    {{ service_request.get_status_display }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Customer</label>
+                            <p class="form-control-static">{{ service_request.customer.username }}</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Update Status</label>
+                        <select name="status" class="form-select" required>
+                            {% for status in service_request.STATUS_CHOICES %}
+                                <option value="{{ status.0 }}"
+                                        {% if service_request.status == status.0 %}selected{% endif %}>
+                                    {{ status.1 }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Assign To</label>
+                        <select name="assigned_to" class="form-select">
+                            <option value="">Unassigned</option>
+                            {% for staff in available_staff %}
+                                <option value="{{ staff.id }}"
+                                        {% if service_request.assigned_to_id == staff.id %}selected{% endif %}>
+                                    {{ staff.get_full_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Update Notes (visible to customer)</label>
+                        <textarea name="notes" class="form-control" rows="3" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Internal Notes (staff only)</label>
+                        <textarea name="internal_notes" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="text-end">
+                        <a href="{% url 'staff:request_detail' service_request.id %}" 
+                           class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Update Request</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

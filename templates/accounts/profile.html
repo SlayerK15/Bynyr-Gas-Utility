@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Gas Utility Portal{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Profile Information</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Personal Information</h5>
+                        <p><strong>Username:</strong> {{ user.username }}</p>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Name:</strong> {{ user.get_full_name }}</p>
+                        {% if not user.is_staff %}
+                            <p><strong>Customer ID:</strong> {{ user.customerprofile.customer_id }}</p>
+                            <p><strong>Phone:</strong> {{ user.customerprofile.phone_number }}</p>
+                            <p><strong>Address:</strong> {{ user.customerprofile.address }}</p>
+                        {% else %}
+                            <p><strong>Employee ID:</strong> {{ user.staffprofile.employee_id }}</p>
+                            <p><strong>Department:</strong> {{ user.staffprofile.department }}</p>
+                            <p><strong>Designation:</strong> {{ user.staffprofile.designation }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Account Statistics</h5>
+                        <p><strong>Member Since:</strong> {{ user.date_joined|date }}</p>
+                        <p><strong>Last Login:</strong> {{ user.last_login|date }}</p>
+                        <p><strong>Total Requests:</strong> {{ user.servicerequest_set.count }}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="text-end">
+                    <a href="{% url 'accounts:profile_edit' %}" class="btn btn-primary">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

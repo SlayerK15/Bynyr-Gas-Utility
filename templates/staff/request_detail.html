@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Request #{{ service_request.id }} - Staff View{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <!-- Request Details -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">Request #{{ service_request.id }}</h4>
+                <span class="badge bg-{{ service_request.status|lower }}">
+                    {{ service_request.get_status_display }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5>Request Information</h5>
+                        <p><strong>Type:</strong> {{ service_request.request_type }}</p>
+                        <p><strong>Created:</strong> {{ service_request.created_at|date:"F j, Y, g:i a" }}</p>
+                        <p><strong>Last Updated:</strong> {{ service_request.updated_at|date:"F j, Y, g:i a" }}</p>
+                        <p><strong>Scheduled Date:</strong> 
+                            {% if service_request.scheduled_date %}
+                                {{ service_request.scheduled_date|date:"F j, Y, g:i a" }}
+                            {% else %}
+                                Not scheduled
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Customer Information</h5>
+                        <p><strong>Name:</strong> {{ service_request.customer.get_full_name }}</p>
+                        <p><strong>Email:</strong> {{ service_request.customer.email }}</p>
+                        <p><strong>Phone:</strong> {{ service_request.customer.customerprofile.phone_number }}</p>
+                        <p><strong>Address:</strong> {{ service_request.customer.customerprofile.address }}</p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h5>Description</h5>
+                    <p>{{ service_request.description }}</p>
+                </div>
+
+                {% if service_request.attachments.exists %}
+                    <div class="mb-4">
+                        <h5>Attachments</h5>
+                        <div class="list-group">
+                            {% for attachment in service_request.attachments.all %}
+                                <a href="{{ attachment.file.url }}" class="list-group-item list-group-item-action">
+                                    {{ attachment.description|default:attachment.file.name }}
+                                    <small class="text-muted">({{ attachment.file.size|filesizeformat }})</small>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Internal Notes -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Internal Notes</h5>
+            </div>
+            <div class="card-body">
+                {% if service_request.internal_notes %}
+                    {{ service_request.internal_notes|linebreaks }}
+                {% else %}
+                    <p class="text-muted">No internal notes available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Status Timeline -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Request Timeline</h5>
+            </div>
+            <div class="card-body">
+                {% include "tracking/timeline.html" with status_updates=service_request.status_updates.all %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- Update Status -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Update Status</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'staff:update_request' service_request.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-select">
+                            {% for status in service_request.STATUS_CHOICES %}
+                                <option value="{{ status.0 }}" 
+                                        {% if service_request.status == status.0 %}selected{% endif %}>
+                                    {{ status.1 }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Assigned To</label>
+                        <select name="assigned_to" class="form-select">
+                            <option value="">Unassigned</option>
+                            {% for staff in available_staff %}
+                                <option value="{{ staff.id }}"
+                                        {% if service_request.assigned_to_id == staff.id %}selected{% endif %}>
+                                    {{ staff.get_full_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea name="notes" class="form-control" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Update Request</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                {% if service_request.status != 'priority' %}
+                    <button class="btn btn-danger w-100 mb-2">Mark as Priority</button>
+                {% endif %}
+                {% if service_request.status == 'pending' %}
+                    <button class="btn btn-success w-100 mb-2">Assign to Me</button>
+                {% endif %}
+                <button class="btn btn-secondary w-100">Schedule Site Visit</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

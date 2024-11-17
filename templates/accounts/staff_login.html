@@ -1,0 +1,117 @@
+<!-- staff/templates/accounts/staff_login.html -->
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    /* Container to center the login box */
+    .login-container {
+        height: calc(42vw); /* Adjust based on device height */
+        background: #f0f2f5; /* Light background for contrast */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    /* Styling the login card */
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px; /* Fixed max width for better appearance */
+        background-color: #ffffff; /* White background for the card */
+        margin: 0 auto; /* Centers the card horizontally */
+    }
+
+    /* Styling the card header */
+    .card-header {
+        background-color: #007bff; /* Blue color for differentiation */
+        color: white;
+        border-bottom: none;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        text-align: center; /* Center the header text */
+        padding: 20px;
+    }
+
+    /* Styling form labels */
+    .form-label {
+        font-weight: 600;
+        color: #333333;
+    }
+
+    /* Styling form inputs */
+    .form-control {
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: none;
+    }
+
+    /* Styling help text */
+    .form-text {
+        font-size: 0.875em;
+        color: #6c757d;
+    }
+
+    /* Styling error messages */
+    .invalid-feedback {
+        display: block;
+        color: #dc3545;
+        font-size: 0.875em;
+    }
+
+    /* Styling the submit button */
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    /* Optional: Add some spacing below the form */
+    .card-body {
+        padding: 30px;
+    }
+
+    /* Ensure the form fields take full width */
+    .card-body form input {
+        width: 100%;
+    }
+
+    /* Adjust body padding to prevent content overlap with footer */
+    body {
+        padding-bottom: 60px; /* Adjust based on footer height */
+    }
+
+</style>
+{% endblock %}
+
+{% block title %}Staff Login - Gas Utility Portal{% endblock %}
+{% block content %}
+<div class="login-container">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title mb-0">Staff Login</h4>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+            </form>
+            <hr>
+            <p class="text-center mb-0">
+                Don't have an account? <a href="{% url 'accounts:staff_register' %}">Register here</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

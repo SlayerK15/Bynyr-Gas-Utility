@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    /* Container styling to center the card */
+    .request-container {
+        min-height: calc(100vh - 50px); /* Adjusted based on device height */
+        background: #f0f2f5; /* Light background for contrast */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    /* Styling the request card */
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px; /* Increased max-width for more form fields */
+        background-color: #ffffff; /* White background for the card */
+        margin: 0 auto; /* Centers the card horizontally */
+    }
+
+    /* Styling the card header */
+    .card-header {
+        background-color: #28a745; /* Changed to a green color for differentiation */
+        color: white;
+        border-bottom: none;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        text-align: center; /* Center the header text */
+        padding: 20px;
+    }
+
+    /* Styling form labels */
+    .form-label {
+        font-weight: 600;
+        color: #333333;
+    }
+
+    /* Styling form inputs */
+    .form-control {
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #28a745;
+        box-shadow: none;
+    }
+
+    /* Styling help text */
+    .form-text {
+        font-size: 0.875em;
+        color: #6c757d;
+    }
+
+    /* Styling error messages */
+    .invalid-feedback {
+        display: block;
+        color: #dc3545;
+        font-size: 0.875em;
+    }
+
+    /* Styling the submit button */
+    .btn-submit {
+        background-color: #28a745;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        background-color: #218838;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+        .card {
+            padding: 15px;
+        }
+
+        .card-header {
+            padding: 15px;
+        }
+    }
+
+    /* Adjust body padding to prevent content overlap with footer */
+    body {
+        padding-bottom: 60px; /* Adjust based on footer height */
+    }
+</style>
+{% endblock %}
+
+{% block title %}New Service Request - Gas Utility Portal{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Create New Service Request</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    
+                    <!-- Render request_type field separately if needed -->
+                    <div class="mb-3">
+                        <label for="{{ form.request_type.id_for_label }}" class="form-label">
+                            {{ form.request_type.label }}
+                        </label>
+                        {{ form.request_type }}
+                        {% if form.request_type.help_text %}
+                            <small class="form-text text-muted">{{ form.request_type.help_text }}</small>
+                        {% endif %}
+                        {% if form.request_type.errors %}
+                            {% for error in form.request_type.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <!-- Render the rest of the fields -->
+                    {% for field in form %}
+                        {% if field.name != 'request_type' %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">
+                                    {{ field.label }}
+                                </label>
+                                {{ field }}
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                    {% for error in field.errors %}
+                                        <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                </form>
+                
+                {% if messages %}
+                    <ul>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

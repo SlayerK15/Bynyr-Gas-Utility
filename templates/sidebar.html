@@ -1,0 +1,42 @@
+<div class="sidebar bg-light h-100 border-end">
+    <div class="position-sticky pt-3">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'staff:dashboard' %}">
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'staff:request_management' %}">
+                    Service Requests
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    Analytics
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    Reports
+                </a>
+            </li>
+        </ul>
+        
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Quick Filters</span>
+        </h6>
+        <ul class="nav flex-column mb-2">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'staff:request_management' %}?status=pending">
+                    Pending Requests
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'staff:request_management' %}?status=priority">
+                    Priority Requests
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

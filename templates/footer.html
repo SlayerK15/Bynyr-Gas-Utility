@@ -1,0 +1,29 @@
+<style>
+    /* Ensure the footer stays fixed at the bottom */
+    .footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #f8f9fa; /* Matches bg-light */
+        z-index: 1030; /* Ensures it stays above other elements */
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
+    }
+
+    /* Add bottom padding to the body to prevent content from being hidden behind the footer */
+    body {
+        padding-bottom: 60px; /* Adjust this value based on footer height */
+    }
+</style>
+
+<footer class="footer mt-auto py-3 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <p class="text-muted">&copy; 2024 Gas Utility Service Portal. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <p class="text-muted">Emergency: 1-800-GAS-LEAK</p>
+            </div>
+        </div>
+    </div>
+</footer>
